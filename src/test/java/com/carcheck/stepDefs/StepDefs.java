@@ -76,6 +76,7 @@ public class StepDefs {
                 softAssert.assertEquals(actualCarDetails.getYear(), expectedCarDetails.getYear(), "Year did not match for the car registration number " + registrationNo);
             }
         });
+        softAssert.assertAll();
     }
 
     @After

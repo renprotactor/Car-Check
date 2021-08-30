@@ -3,8 +3,7 @@ package com.carcheck.pages;
 //import io.carcheck.modal.Car;
 
 import com.carcheck.utils.BasePage;
-import com.carcheck.utils.BrowserUtil;
-import io.cucumber.java.After;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
