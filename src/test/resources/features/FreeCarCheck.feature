@@ -1,8 +1,8 @@
-Feature: Verifying the vehicle registration
+Feature: Retrieve the car details using vehicle registration
 
-  Scenario: Validate the car registrations with input and output files
-    Given User read the input files
+  Scenario: Validate the car details from site using input and output files
+    Given User read the input file
       | ./src/test/resources/testInput/car_input.txt |
-    When User extracted vehicle registration numbers based on patterns
-    Then User compares results of registration numbers from "https://cartaxcheck.co.uk/" with output files
+    When User extracts vehicle registration numbers from the input file
+    Then User compares results of registration numbers from "https://cartaxcheck.co.uk/" against the  output file
       | ./src/test/resources/testOutput/car_output.txt |

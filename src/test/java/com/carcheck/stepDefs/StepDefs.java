@@ -3,36 +3,32 @@ package com.carcheck.stepDefs;
 import com.carcheck.config.FileParser;
 import com.carcheck.pages.Car;
 import com.carcheck.pages.CarDetailsPage;
+import com.carcheck.utils.BasePage;
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.datatable.DataTable;
 import org.testng.asserts.SoftAssert;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class StepDefs {
-
-
-    CarDetailsPage carDetailsPage=new CarDetailsPage();
-    List<String> inputFiles, outputFiles;
+    CarDetailsPage carDetailsPage = new CarDetailsPage();
+    List<String> inputFile, outputFile;
     List<String> allRegNos = new ArrayList<>();
     List<Car> cars = new ArrayList<>();
 
-
-    @Given("User read the input files")
-    public void user_read_the_input_files(io.cucumber.datatable.DataTable file) {
-        inputFiles = file.asList();
-        System.out.println(inputFiles);
+    @Given("User read the input file")
+    public void user_read_the_input_file(DataTable inputFile) {
+        this.inputFile = inputFile.asList();
     }
 
-    @When("User extracted vehicle registration numbers based on patterns")
-    public void user_extracted_vehicle_registration_numbers_based_on_patterns() {
-        inputFiles.forEach(filePath -> {
+    @When("User extracts vehicle registration numbers from the input file")
+    public void user_extracts_vehicle_registration_numbers_from_the_input_file() {
+        inputFile.forEach(filePath -> {
             FileParser fileParser = new FileParser(filePath);
             List<String> regNos = fileParser.getRegNos();
             if (!regNos.isEmpty()) {
@@ -41,11 +37,10 @@ public class StepDefs {
         });
     }
 
-
-    @Then("User compares results of registration numbers from {string} with output files")
-    public void user_compares_results_of_registration_numbers_from_with_output_files(String url,DataTable file) {
-        outputFiles = file.asList();
-        outputFiles.forEach(filePath -> {
+    @Then("User compares results of registration numbers from {string} against the  output file")
+    public void user_compares_results_of_registration_numbers_from_against_the_output_file(String url, DataTable outputFile) {
+        this.outputFile = outputFile.asList();
+        this.outputFile.forEach(filePath -> {
             FileParser fileParser = new FileParser(filePath);
             List<String> vehicleDetails = fileParser.getLines();
             if (!vehicleDetails.isEmpty()) {
@@ -59,35 +54,35 @@ public class StepDefs {
             }
         });
 
-
         SoftAssert softAssert = new SoftAssert();
-
         allRegNos.forEach(regNo -> {
 
             String registrationNo = regNo.replaceAll("\\s", "");
-
-//            carDetailsPage.openURL("https://cartaxcheck.co.uk/free-car-check/?vrm=DN09HRM");
             carDetailsPage.openURL(url + "free-car-check/?vrm=" + registrationNo);
             Car actualCarDetails = carDetailsPage.getCarDetails();
             Car expectedCarDetails = cars.stream().filter(car -> car.getRegNo().equals(registrationNo)).findFirst().orElse(null);
             if (actualCarDetails == null) {
                 softAssert.assertTrue(false, "Car registration no " + registrationNo + " not found at " + url);
             } else if (expectedCarDetails == null) {
-                softAssert.assertTrue(false, "Car registration no " + registrationNo + " not found in output file");
+                softAssert.assertTrue(false, "Car registration no " + registrationNo + " not found in the output file");
             } else {
-                //Assert Make
-                softAssert.assertEquals(actualCarDetails.getMake(), expectedCarDetails.getMake(), "Make didn't matched for the car number " + registrationNo);
-                //Assert Model
-                softAssert.assertEquals(actualCarDetails.getModel(), expectedCarDetails.getModel(), "Model didn't matched for the car number " + registrationNo);
-                //Assert Color
-                softAssert.assertEquals(actualCarDetails.getColor(), expectedCarDetails.getColor(), "Color didn't matched for the car number " + registrationNo);
-                //Assert Year
-                softAssert.assertEquals(actualCarDetails.getYear(), expectedCarDetails.getYear(), "Year didn't matched for the car number " + registrationNo);
+                //Asserting Make
+                softAssert.assertEquals(actualCarDetails.getMake(), expectedCarDetails.getMake(), "Make did not match for the car registration number " + registrationNo);
+                //Asserting Model
+                softAssert.assertEquals(actualCarDetails.getModel(), expectedCarDetails.getModel(), "Model did not match for the car registration number " + registrationNo);
+                //Asserting Color
+                softAssert.assertEquals(actualCarDetails.getColor(), expectedCarDetails.getColor(), "Color did not match for the car registration number " + registrationNo);
+                //Asserting Year
+                softAssert.assertEquals(actualCarDetails.getYear(), expectedCarDetails.getYear(), "Year did not match for the car registration number " + registrationNo);
             }
         });
-
-
     }
 
-
+    @After
+    public void tearDownStep() {
+        if (BasePage.driver != null) {
+            BasePage.driver.close();
+            BasePage.driver.quit();
+        }
+    }
 }

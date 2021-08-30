@@ -1,7 +1,10 @@
 package com.carcheck.pages;
 
 //import io.carcheck.modal.Car;
+
 import com.carcheck.utils.BasePage;
+import com.carcheck.utils.BrowserUtil;
+import io.cucumber.java.After;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -28,10 +31,10 @@ public class CarDetailsPage extends BasePage {
     @FindBy(partialLinkText = "")
     WebElement btnTryAgain;
 
-    public CarDetailsPage(){
+    public CarDetailsPage() {
         try {
-            PageFactory.initElements (driver, this);
-             } catch (Exception e) {
+            PageFactory.initElements(driver, this);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -72,5 +75,6 @@ public class CarDetailsPage extends BasePage {
         }
         return found;
     }
+
 
 }
