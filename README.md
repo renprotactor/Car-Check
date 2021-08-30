@@ -1,5 +1,5 @@
 # Car Check Automation Test BDD framework
-CAr check Automation Test is Selenium based Cucumber-Java-maven framework to perform functional testing, data driven using cucumber to add more input files in future.
+Car check Automation Test is Selenium based Cucumber-Java-maven framework to perform functional testing, data driven using cucumber to add more input files in future.
 The IDE used is Intellij 
 
 # Getting Started
